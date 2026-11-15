@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-pFO3DUwLUMuiPtphz5mV9laTWlJKBXyf8+T1UNrZDx4='; style-src 'sha256-4/JLkSfUFlH7UDmHnnDLlgX9cFOSexdWa2QYMYWlTRU=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="color-scheme" content="light">
+<title>Take Role – Rotating Quotes</title>
+<meta name="description" content="Rotating crypto slogans with a one-click copy button. Choose how long each slogan stays on screen, from 1 to 5 minutes.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317181a'/%3E%3Ccircle cx='44' cy='20' r='7' fill='%23f26a21'/%3E%3Crect x='14' y='30' width='36' height='5' rx='2.5' fill='%23fff'/%3E%3Crect x='14' y='41' width='24' height='5' rx='2.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0f3;--surface:#fff;--ink:#17181a;--muted:#7a8794;--field:#f1f2f4;--accent:#f26a21;--accent-h:#d9570f;--accent-soft:#fdeadd;--dot:#f7882f;--warn-bg:#fff8e6;--warn-bd:#f0dfae;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow-x:hidden}
+.deco{position:fixed;border-radius:50%;background:var(--dot);z-index:0}
+.deco.a{width:190px;height:190px;top:-70px;left:-60px}
+.deco.b{width:150px;height:150px;bottom:-60px;right:-40px;opacity:.9}
+.card{position:relative;z-index:1;width:100%;max-width:880px;background:var(--surface);border-radius:28px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;box-shadow:0 14px 40px rgba(20,30,40,.09)}
+.left{padding:26px 22px 22px;display:flex;flex-direction:column}
+h1{font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif;font-weight:400;letter-spacing:.03em;font-size:56px;line-height:1;margin:0 0 10px}
+.desc{margin:0 0 20px;color:var(--muted);font-size:15px;line-height:1.55}
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.pill{border:0;background:var(--field);color:var(--ink);padding:9px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.pill:hover{background:var(--accent-soft)}
+.pill[aria-pressed="true"]{background:var(--ink);color:#fff}
+.pill:focus-visible,.btn:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+.quote{position:relative;background:var(--field);border-radius:14px;padding:26px 20px 22px;min-height:150px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.q-text{font-size:1.45rem;line-height:1.45;text-align:center;margin:0;transition:opacity .3s ease;min-height:2.9em;display:flex;align-items:center;justify-content:center}
+.q-text.fade{opacity:0}
+.q-count{margin:12px 0 0;text-align:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bar{position:absolute;left:0;bottom:0;height:4px;width:100%;background:var(--accent);transform-origin:left center;animation:drain 60s linear forwards}
+@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.actions{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;border:0;border-radius:12px;padding:14px 18px;font:inherit;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s,transform .1s}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:hover{background:var(--accent)}
+.btn.ghost{background:var(--field);color:var(--ink);flex:0 0 auto}
+.btn.ghost:hover{background:var(--accent-soft)}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.sr-copy{position:fixed;left:-9999px;top:0;opacity:0}
+.note{margin:16px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
+.right{border-radius:22px;background:linear-gradient(150deg,#f7882f,#f26a21 55%,#e05a12);display:flex;align-items:center;justify-content:center;padding:24px;min-height:420px}
+.right svg{width:100%;max-width:300px;height:auto}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:5}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:760px){.card{grid-template-columns:1fr;max-width:520px}.right,.deco{display:none}.left{padding:16px 10px}h1{font-size:46px}.q-text{font-size:1.25rem}}
+@media (prefers-reduced-motion:reduce){.q-text,.pill,.btn,.toast{transition:none}.bar{animation-duration:0s}}
+</style>
+</head>
+<body>
+<div class="deco a" aria-hidden="true"></div>
+<div class="deco b" aria-hidden="true"></div>
+<main class="card">
+  <section class="left">
+    <h1>Take Role</h1>
+    <p class="desc">Rotating crypto slogans with a one-click copy button. Pick how long each slogan stays on screen, then copy the one you like.</p>
+    <p class="label">Change slogan every</p>
+    <div class="pills" id="pills" role="group" aria-label="Rotation time"></div>
+    <div class="quote">
+      <p class="q-text" id="qText" aria-live="polite"></p>
+      <p class="q-count" id="qCount"></p>
+      <div class="bar" id="bar"></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="copyBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        <span>Copy</span>
+      </button>
+      <button class="btn ghost" id="nextBtn" type="button">Next</button>
+    </div>
+    <p class="note">Slogans are for inspiration, not financial advice.</p>
+  </section>
+  <aside class="right" aria-hidden="true">
+    <svg viewBox="0 0 300 300" fill="none">
+      <circle cx="150" cy="150" r="120" fill="#ffffff" fill-opacity=".14"/>
+      <rect x="52" y="78" width="196" height="112" rx="22" fill="#fff"/>
+      <path d="M96 190l-6 34 38-34z" fill="#fff"/>
+      <rect x="76" y="108" width="120" height="10" rx="5" fill="#17181a"/>
+      <rect x="76" y="132" width="148" height="10" rx="5" fill="#d7dbe0"/>
+      <rect x="76" y="156" width="92" height="10" rx="5" fill="#d7dbe0"/>
+      <circle cx="226" cy="84" r="30" fill="#17181a"/>
+      <circle cx="226" cy="84" r="22" fill="none" stroke="#f7882f" stroke-width="4"/>
+      <rect x="219" y="72" width="14" height="24" rx="3" fill="#f7882f"/>
+      <circle cx="70" cy="238" r="9" fill="#fff" fill-opacity=".7"/>
+      <circle cx="238" cy="232" r="14" fill="#fff" fill-opacity=".35"/>
+    </svg>
+  </aside>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function () {
+  var quotes = ["Decentralize the future. 🌐", "Crypto empowers everyone. 💪", "Blockchain builds trust. 🔗", "Invest in innovation. 💡", "Why wait? Join the revolution! 🚀", "Crypto: Future of finance? 💸", "Ready for blockchain? 🔗", "Buy the dip, HODL. 💎", "Smart contracts, smarter future. 🤖", "Your keys, your crypto. 🔑", "Transparency on-chain. 👀", "Decentralization = freedom. 🕊️", "Crypto transcends borders. 🌍", "Stake now, earn later. 🌱", "NFTs redefine ownership. 🎨", "Build on blockchain. 🛠️", "Join the crypto movement. 👥", "Secure digital assets. 🔒", "Trust the code. 👨‍💻", "Embrace DeFi. 💹", "Earn while sleeping. 😴", "Crypto is inevitable. ⏳", "Innovate or stagnate. 🚀", "Power to the people. ✊", "No middlemen, just crypto. ✂️", "Future-proof your portfolio. 📈", "Diversify with crypto. 🌐", "Think global, crypto local. 🌍", "Code is law. ⚖️", "Decentralize everything. 🌐", "HODL through storms. 💎", "Mine, stake, earn. ⛏️", "Privacy is right. 🛡️", "Bank the unbanked. 🏦", "Fast, secure transactions. ⚡", "WAGMI. 🚀", "DYOR before investing. 🔍", "DeFi changes finance. 💸", "DAOs govern communities. 🏛️", "NFTs unlock creativity. 🎨", "Metaverse needs crypto. 🕶️", "Web3 is coming. 🌐", "Stay bullish. 🐂", "Fiat fails, crypto prevails. 💪", "Adapt or get left. ⏳", "Crypto never sleeps. 🌙", "Be your own bank. 🏦", "Liquidity drives markets. 💧", "Innovate with blockchain. 💡", "Tokenize the world. 🌍", "Ready for adoption? 🚀", "Why trust banks? 🏦", "Risk or opportunity? 🤔", "Bull run incoming? 📈", "Decentralized future inevitable? 🌐", "Layer 2 scales. ⚖️", "Cross-chain matters. 🔗", "Reward early adopters. 🎁", "Smart money here. 💼", "Green crypto thrives. 🌱", "Trade 24/7, anywhere. 🌍", "Cold wallets win. ❄️", "Ethereum powers dApps. ⚡", "Bitcoin: digital gold. 🪙", "Altcoins = diversity. 🌈", "Bubble or breakthrough? 🎈", "When Lambo? Soon. 🚗", "Staking pays off? ✅", "DeFi replace banks? 🏦", "NFTs: fad or future? 🎨", "Governance tokens empower. 🗳️", "Scalability solves congestion. 🚦", "Privacy coins matter. 🕶️", "Crypto philanthropy grows. ❤️", "Regulation meets innovation. ⚖️", "Education is key. 🔑", "Community drives projects. 👥", "In crypto we trust. ✊", "Hackers fear blockchain. 🛡️", "Innovation never stops. 🚀", "Bullish on crypto? 🐂", "Crypto winter coming? ❄️", "Ready for mainstream? 🌊", "Adoption accelerating? 🚀", "Portfolio decentralized enough? 🌐", "FOMO wisely. 📉", "Crypto bridges economies. 🌉", "DEXs > CEXs. 🔄", "Custody your coins. 🔐", "Crypto beats inflation. 💸", "Meme coins valuable? 🐕", "Secure = rich. 💰", "Unlock potential. 🔓", "Global payments, instant. ⚡", "Smart contracts automate trust. 🤖", "The people’s choice. 👥", "Blockchain verifies truth. ✅", "Invest in unknown. 🌌", "Crypto creates equality. ⚖️", "To the moon! 🌕"];
+  var times = [60, 120, 180, 240, 300];
+  var qText = document.getElementById("qText");
+  var qCount = document.getElementById("qCount");
+  var bar = document.getElementById("bar");
+  var pills = document.getElementById("pills");
+  var copyBtn = document.getElementById("copyBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var toast = document.getElementById("toast");
+  var seconds = 60, idx = 0, timerId = null, toastId = null, memory = {};
+
+  function store(k, v) { try { localStorage.setItem(k, v); } catch (e) { memory[k] = v; } }
+  function load(k) { try { var v = localStorage.getItem(k); return v === null ? memory[k] : v; } catch (e) { return memory[k]; } }
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+  }
+  shuffle(quotes);
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastId);
+    toastId = setTimeout(function () { toast.classList.remove("show"); }, 1800);
+  }
+
+  function paint() {
+    qText.textContent = quotes[idx];
+    qCount.textContent = "Slogan " + (idx + 1) + " of " + quotes.length;
+  }
+
+  function restart() {
+    clearTimeout(timerId);
+    bar.style.animation = "none";
+    void bar.offsetWidth;
+    bar.style.animation = "drain " + seconds + "s linear forwards";
+    timerId = setTimeout(advance, seconds * 1000);
+  }
+
+  function advance() {
+    qText.classList.add("fade");
+    setTimeout(function () {
+      idx = (idx + 1) % quotes.length;
+      paint();
+      qText.classList.remove("fade");
+    }, 300);
+    restart();
+  }
+
+  function setTime(s) {
+    seconds = s;
+    store("takerole.seconds", String(s));
+    var list = pills.children;
+    for (var i = 0; i < list.length; i++) {
+      list[i].setAttribute("aria-pressed", String(Number(list[i].getAttribute("data-time")) === s));
+    }
+    restart();
+  }
+
+  times.forEach(function (t) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "pill";
+    b.setAttribute("data-time", String(t));
+    b.textContent = (t / 60) + (t === 60 ? " min" : " min");
+    b.addEventListener("click", function () { setTime(t); });
+    pills.appendChild(b);
+  });
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.className = "sr-copy";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyQuote() {
+    var text = qText.textContent;
+    function done(ok) { showToast(ok ? "Copied to clipboard" : "Could not copy. Select the text and copy it."); }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); });
+      } else { done(fallbackCopy(text)); }
+    } catch (e) { done(fallbackCopy(text)); }
+  }
+
+  copyBtn.addEventListener("click", function () { copyQuote(); });
+  nextBtn.addEventListener("click", function () { advance(); });
+
+  var saved = parseInt(load("takerole.seconds"), 10);
+  paint();
+  setTime(times.indexOf(saved) >= 0 ? saved : 60);
+})();
+</script>
+</body>
+</html>
